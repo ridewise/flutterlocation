@@ -105,7 +105,8 @@
         self.clLocationManager.allowsBackgroundLocationUpdates = enable;
       }
       if (@available(iOS 11.0, *)) {
-        self.clLocationManager.showsBackgroundLocationIndicator = enable;
+        self.clLocationManager.showsBackgroundLocationIndicator = NO;
+        self.clLocationManager.pausesLocationUpdatesAutomatically = NO;
       }
       result(enable ? @1 : @0);
     } else {
