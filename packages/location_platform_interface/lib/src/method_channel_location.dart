@@ -64,16 +64,10 @@ class MethodChannelLocation extends LocationPlatform {
 
   /// Enables or disables service in the background mode.
   @override
-  Future<bool> enableBackgroundMode({
-    bool? enable,
-    bool? banner,
-  }) async {
+  Future<bool> enableBackgroundMode({bool? enable}) async {
     final result = await _methodChannel!.invokeMethod(
       'enableBackgroundMode',
-      <String, dynamic>{
-        'enable': enable,
-        'banner': banner,
-      },
+      <String, dynamic>{'enable': enable},
     );
 
     return result == 1;
