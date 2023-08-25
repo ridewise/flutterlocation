@@ -68,27 +68,7 @@
   [self initLocation];
   if ([call.method isEqualToString:@"changeSettings"]) {
     if ([CLLocationManager locationServicesEnabled]) {
-      CLLocationAccuracy reducedAccuracy = kCLLocationAccuracyHundredMeters;
-      if (@available(iOS 14, *)) {
-        reducedAccuracy = kCLLocationAccuracyReduced;
-      }
-      NSDictionary *dictionary = @{
-        @"0" : @(kCLLocationAccuracyKilometer),
-        @"1" : @(kCLLocationAccuracyHundredMeters),
-        @"2" : @(kCLLocationAccuracyNearestTenMeters),
-        @"3" : @(kCLLocationAccuracyBest),
-        @"4" : @(kCLLocationAccuracyBestForNavigation),
-        @"5" : @(reducedAccuracy)
-      };
-
-      self.clLocationManager.desiredAccuracy =
-          [dictionary[call.arguments[@"accuracy"]] doubleValue];
-      double distanceFilter = [call.arguments[@"distanceFilter"] doubleValue];
-      if (distanceFilter == 0) {
-        distanceFilter = kCLDistanceFilterNone;
-      }
-      self.clLocationManager.distanceFilter = distanceFilter;
-      result(@1);
+      NSLog(@"Location Service Enabled");
     }
   } else if ([call.method isEqualToString:@"isBackgroundModeEnabled"]) {
     if (self.applicationHasLocationBackgroundMode) {
@@ -102,12 +82,13 @@
     BOOL enable = [call.arguments[@"enable"] boolValue];
     BOOL banner = [call.arguments[@"banner"] boolValue];
     if (self.applicationHasLocationBackgroundMode) {
+      NSLog(@"Location Background Mode On");
       if (@available(iOS 9.0, *)) {
         self.clLocationManager.allowsBackgroundLocationUpdates = enable;
       }
       if (@available(iOS 11.0, *)) {
-        self.clLocationManager.showsBackgroundLocationIndicator = banner;
-        self.clLocationManager.pausesLocationUpdatesAutomatically = NO;
+        self.clLocationManager.showsBackgroundLocationIndicator = YES;
+        self.clLocationManager.pausesLocationUpdatesAutomatically = YES;
       }
       result(enable ? @1 : @0);
     } else {
@@ -137,11 +118,11 @@
     self.locationWanted = YES;
 
     if ([self isPermissionGranted]) {
-      [self.clLocationManager startUpdatingLocation];
+      [self.clLocationManager startMonitoringSignificantLocationChanges];
     } else {
       [self requestPermission];
       if ([self isPermissionGranted]) {
-        [self.clLocationManager startUpdatingLocation];
+        [self.clLocationManager startMonitoringSignificantLocationChanges];
       }
     }
   } else if ([call.method isEqualToString:@"hasPermission"]) {
@@ -291,7 +272,8 @@
   self.flutterListening = YES;
 
   if ([self isPermissionGranted]) {
-    [self.clLocationManager startUpdatingLocation];
+    NSLog(@"Start monitoring");
+    [self.clLocationManager startMonitoringSignificantLocationChanges];
   } else {
     [self requestPermission];
   }
@@ -301,7 +283,8 @@
 
 - (FlutterError *)onCancelWithArguments:(id)arguments {
   self.flutterListening = NO;
-  [self.clLocationManager stopUpdatingLocation];
+  [self.clLocationManager stopMonitoringSignificantLocationChanges];
+    NSLog(@"Stop location update");
   return nil;
 }
 
@@ -316,6 +299,7 @@
   CLLocation *location = locations.lastObject;
 
   NSTimeInterval timeInSeconds = [location.timestamp timeIntervalSince1970];
+    NSLog(@"Update Location");
   BOOL superiorToIos10 =
       [UIDevice currentDevice].systemVersion.floatValue >= 10;
   NSDictionary<NSString *, NSNumber *> *coordinatesDict = @{
@@ -359,7 +343,7 @@
     }
 
     if (self.locationWanted || self.flutterListening) {
-      [self.clLocationManager startUpdatingLocation];
+      [self.clLocationManager startMonitoringSignificantLocationChanges];
     }
   } else if (@available(macOS 10.12, *)) {
     if (status == kCLAuthorizationStatusAuthorizedAlways) {
@@ -369,7 +353,7 @@
       }
 
       if (self.locationWanted || self.flutterListening) {
-        [self.clLocationManager startUpdatingLocation];
+        [self.clLocationManager startMonitoringSignificantLocationChanges];
       }
     }
   }
@@ -382,7 +366,7 @@
     }
 
     if (self.locationWanted || self.flutterListening) {
-      [self.clLocationManager startUpdatingLocation];
+      [self.clLocationManager startMonitoringSignificantLocationChanges];
     }
   }
 #endif
