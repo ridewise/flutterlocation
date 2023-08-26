@@ -66,6 +66,7 @@
 - (void)handleMethodCall:(FlutterMethodCall *)call
                   result:(FlutterResult)result {
   [self initLocation];
+  NSLog(@"get call %@", call.method);
   if ([call.method isEqualToString:@"changeSettings"]) {
     if ([CLLocationManager locationServicesEnabled]) {
       NSLog(@"Location Service Enabled");
@@ -95,6 +96,7 @@
       result(@0);
     }
   } else if ([call.method isEqualToString:@"getLocation"]) {
+    NSLog(@"getLocation call");
     if (![CLLocationManager locationServicesEnabled]) {
       result([FlutterError
           errorWithCode:@"SERVICE_STATUS_DISABLED"
@@ -118,11 +120,11 @@
     self.locationWanted = YES;
 
     if ([self isPermissionGranted]) {
-      [self.clLocationManager startMonitoringSignificantLocationChanges];
+      [self.clLocationManager startUpdatingLocation];
     } else {
       [self requestPermission];
       if ([self isPermissionGranted]) {
-        [self.clLocationManager startMonitoringSignificantLocationChanges];
+        [self.clLocationManager startUpdatingLocation];
       }
     }
   } else if ([call.method isEqualToString:@"hasPermission"]) {
