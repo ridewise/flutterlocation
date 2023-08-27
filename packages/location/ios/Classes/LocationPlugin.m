@@ -69,7 +69,27 @@
   NSLog(@"get call %@", call.method);
   if ([call.method isEqualToString:@"changeSettings"]) {
     if ([CLLocationManager locationServicesEnabled]) {
-      NSLog(@"Location Service Enabled");
+      CLLocationAccuracy reducedAccuracy = kCLLocationAccuracyHundredMeters;
+      if (@available(iOS 14, *)) {
+        reducedAccuracy = kCLLocationAccuracyReduced;
+      }
+      NSDictionary *dictionary = @{
+              @"0" : @(kCLLocationAccuracyKilometer),
+              @"1" : @(kCLLocationAccuracyHundredMeters),
+              @"2" : @(kCLLocationAccuracyNearestTenMeters),
+              @"3" : @(kCLLocationAccuracyBest),
+              @"4" : @(kCLLocationAccuracyBestForNavigation),
+              @"5" : @(reducedAccuracy)
+      };
+
+      self.clLocationManager.desiredAccuracy =
+              [dictionary[call.arguments[@"accuracy"]] doubleValue];
+      double distanceFilter = [call.arguments[@"distanceFilter"] doubleValue];
+      if (distanceFilter == 0) {
+        distanceFilter = kCLDistanceFilterNone;
+      }
+      self.clLocationManager.distanceFilter = distanceFilter;
+      result(@1);
     }
   } else if ([call.method isEqualToString:@"isBackgroundModeEnabled"]) {
     if (self.applicationHasLocationBackgroundMode) {
