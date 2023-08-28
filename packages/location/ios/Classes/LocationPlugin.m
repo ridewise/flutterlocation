@@ -106,7 +106,7 @@
       }
       if (@available(iOS 11.0, *)) {
         self.clLocationManager.showsBackgroundLocationIndicator = NO;
-        self.clLocationManager.pausesLocationUpdatesAutomatically = NO;
+        self.clLocationManager.pausesLocationUpdatesAutomatically = YES;
       }
       result(enable ? @1 : @0);
     } else {
@@ -160,6 +160,17 @@
     } else {
       result(@2);
     }
+  } else if ([call.method isEqualToString:@"enableSignificantLocationChange"]) {
+    if ([self isPermissionGranted]) {
+      [self.clLocationManager startMonitoringSignificantLocationChanges];
+      result(@1);
+    } else {
+      [self requestPermission];
+      result(@0);
+    }
+  } else if ([call.method isEqualToString:@"disableSignificantLocationChange"]) {
+    [self.clLocationManager stopMonitoringSignificantLocationChanges];
+    result(@1);
   } else if ([call.method isEqualToString:@"serviceEnabled"]) {
     if ([CLLocationManager locationServicesEnabled]) {
       result(@1);
@@ -385,6 +396,14 @@
     }
   }
 #endif
+}
+
+- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager {
+    NSLog(@"XXXXXXXX pausing location");
+}
+
+- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager {
+    NSLog(@"YYYYYYYYY resuming location");
 }
 
 @end

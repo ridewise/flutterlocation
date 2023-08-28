@@ -102,6 +102,16 @@ class LocationPlatform extends PlatformInterface {
     throw UnimplementedError();
   }
 
+  /// Start significant location change monitoring
+  Future<bool> enableSignificantLocationChange() {
+    throw UnimplementedError();
+  }
+
+  /// Stop significant location change monitoring
+  Future<bool> disableSignificantLocationChange() {
+    throw UnimplementedError();
+  }
+
   /// Change options of sticky background notification on Android.
   ///
   /// This method only applies to Android and allows for customizing the

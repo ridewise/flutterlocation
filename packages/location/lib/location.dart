@@ -99,6 +99,16 @@ class Location implements LocationPlatform {
     return LocationPlatform.instance.onLocationChanged;
   }
 
+  @override
+  Future<bool> enableSignificantLocationChange() {
+    return LocationPlatform.instance.enableSignificantLocationChange();
+  }
+
+  @override
+  Future<bool> disableSignificantLocationChange() {
+    return LocationPlatform.instance.disableSignificantLocationChange();
+  }
+
   /// Change options of sticky background notification on Android.
   ///
   /// This method only applies to Android and allows for customizing the

@@ -140,12 +140,29 @@ class MethodChannelLocation extends LocationPlatform {
   /// Throws an error if the app has no permission to access location.
   @override
   Stream<LocationData> get onLocationChanged {
-    return _onLocationChanged ??=
-        _eventChannel!.receiveBroadcastStream().map<LocationData>(
-              (dynamic event) => LocationData.fromMap(
-                Map<String, dynamic>.of(event as Map<String, dynamic>),
-              ),
-            );
+    return _onLocationChanged ??= _eventChannel!
+        .receiveBroadcastStream()
+        .map<LocationData>((dynamic event) {
+      event as Map<Object?, Object?>;
+
+      return LocationData.fromMap(
+        Map<String, dynamic>.of(event.cast<String, dynamic>()),
+      );
+    });
+  }
+
+  @override
+  Future<bool> enableSignificantLocationChange() async {
+    final result =
+        await _methodChannel!.invokeMethod('enableSignificantLocationChange');
+    return result == 1;
+  }
+
+  @override
+  Future<bool> disableSignificantLocationChange() async {
+    final result =
+        await _methodChannel!.invokeMethod('disableSignificantLocationChange');
+    return result == 1;
   }
 
   /// Change options of sticky background notification on Android.
