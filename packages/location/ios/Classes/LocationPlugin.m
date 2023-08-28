@@ -13,6 +13,7 @@
 @property(assign, nonatomic) BOOL permissionWanted;
 // Needed to prevent instant firing of the previous known location
 @property(assign, nonatomic) int waitNextLocation;
+@property(assign, nonatomic) int stopUpdateCounter;
 
 @property(copy, nonatomic) FlutterEventSink flutterEventSink;
 @property(assign, nonatomic) BOOL flutterListening;
@@ -43,6 +44,7 @@
     self.permissionWanted = NO;
     self.flutterListening = NO;
     self.waitNextLocation = 2;
+    self.stopUpdateCounter = 10;
     self.hasInit = NO;
   }
   return self;
@@ -66,7 +68,7 @@
 - (void)handleMethodCall:(FlutterMethodCall *)call
                   result:(FlutterResult)result {
   [self initLocation];
-  NSLog(@"get call %@", call.method);
+  NSLog(@"got call %@", call.method);
   if ([call.method isEqualToString:@"changeSettings"]) {
     if ([CLLocationManager locationServicesEnabled]) {
       CLLocationAccuracy reducedAccuracy = kCLLocationAccuracyHundredMeters;
@@ -108,7 +110,7 @@
         self.clLocationManager.allowsBackgroundLocationUpdates = enable;
       }
       if (@available(iOS 11.0, *)) {
-        self.clLocationManager.showsBackgroundLocationIndicator = YES;
+        self.clLocationManager.showsBackgroundLocationIndicator = banner;
         self.clLocationManager.pausesLocationUpdatesAutomatically = NO;
       }
       result(enable ? @1 : @0);
@@ -140,10 +142,17 @@
     self.locationWanted = YES;
 
     if ([self isPermissionGranted]) {
+      NSLog(@"Start Updating Location by getLocation");
+      if (self.stopUpdateCounter < 10) {
+        self.stopUpdateCounter += 1;
+      }
+
       [self.clLocationManager startUpdatingLocation];
     } else {
       [self requestPermission];
       if ([self isPermissionGranted]) {
+        NSLog(@"Start Updating Location by getLocation");
+        self.stopUpdateCounter += 1;
         [self.clLocationManager startUpdatingLocation];
       }
     }
@@ -295,6 +304,7 @@
 
   if ([self isPermissionGranted]) {
     NSLog(@"Start monitoring");
+    [self.clLocationManager stopUpdatingLocation];
     [self.clLocationManager startMonitoringSignificantLocationChanges];
   } else {
     [self requestPermission];
@@ -314,6 +324,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager
      didUpdateLocations:(NSArray<CLLocation *> *)locations {
+  NSLog(@"didUpdateLocations Call");
   if (self.waitNextLocation > 0) {
     self.waitNextLocation -= 1;
     return;
@@ -338,14 +349,13 @@
   };
 
   if (self.locationWanted) {
+    NSLog(@"Location result to flutterResult");
     self.locationWanted = NO;
     self.flutterResult(coordinatesDict);
   }
   if (self.flutterListening) {
+    NSLog(@"Location result to flutterEventSink");
     self.flutterEventSink(coordinatesDict);
-  } else {
-    [self.clLocationManager stopUpdatingLocation];
-    self.waitNextLocation = 2;
   }
 }
 
