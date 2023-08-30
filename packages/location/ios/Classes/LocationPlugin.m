@@ -398,12 +398,4 @@
 #endif
 }
 
-- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager {
-    NSLog(@"XXXXXXXX pausing location");
-}
-
-- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager {
-    NSLog(@"YYYYYYYYY resuming location");
-}
-
 @end
