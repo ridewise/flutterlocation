@@ -1,3 +1,18 @@
+## 5.0.3
+
+- Lower minimum iOS deployment target from 13 to 11 (#882 by Matias de Andrea)
+
+## 5.0.2+1
+
+- Clean up README (#874)
+  - Fix broken links in the README of `location` package
+  - Remove most of the duplicated info from repo's top-level README
+
+## 5.0.2+1
+
+- Bump dependency on `location_platform_interface` to `^3.1.1`
+- Bump dependency on `location_web` to `^4.1.1`
+
 ## 5.0.1
 
 - Refactoring (#853)

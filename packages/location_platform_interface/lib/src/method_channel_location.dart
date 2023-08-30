@@ -64,16 +64,10 @@ class MethodChannelLocation extends LocationPlatform {
 
   /// Enables or disables service in the background mode.
   @override
-  Future<bool> enableBackgroundMode({
-    bool? enable,
-    bool? banner,
-  }) async {
+  Future<bool> enableBackgroundMode({bool? enable}) async {
     final result = await _methodChannel!.invokeMethod(
       'enableBackgroundMode',
-      <String, dynamic>{
-        'enable': enable,
-        'banner': banner,
-      },
+      <String, dynamic>{'enable': enable},
     );
 
     return result == 1;
@@ -233,7 +227,7 @@ class MethodChannelLocation extends LocationPlatform {
     }
 
     final result = await _methodChannel!
-        .invokeMethod<Map<String, dynamic>?>('changeNotificationOptions', data);
+        .invokeMethod<Map<dynamic, dynamic>>('changeNotificationOptions', data);
 
     return result != null ? AndroidNotificationData.fromMap(result) : null;
   }

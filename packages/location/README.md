@@ -1,9 +1,9 @@
 # location
 
-[![patrol on pub.dev][patrol_badge]][patrol_link]
+[![location on pub.dev][location_badge]][location_link]
 [![code style][leancode_lint_badge]][leancode_lint_link]
 [![powered by][docs_page_badge]][docs_page_link]
-[![codecov](https://codecov.io/gh/Lyokone/flutterlocation/branch/master/graph/badge.svg)](https://codecov.io/gh/Lyokone/flutterlocation)
+[![codecov][codecov_badge]][codecov_link]
 
 This plugin for [Flutter](https://flutter.dev)
 handles getting a location on Android and iOS. It also provides callbacks when the location is changed.
@@ -172,7 +172,7 @@ class LocationData {
   final double accuracy; // Estimated horizontal accuracy of this location, radial, in meters
   final double altitude; // In meters above the WGS 84 reference ellipsoid
   final double speed; // In meters/second
-  final double speedAccuracy; // In meters/second, always 0 on iOS
+  final double speedAccuracy; // In meters/second, always 0 on iOS and web
   final double heading; // Heading is the horizontal direction of travel of this device, in degrees
   final double time; // timestamp of the LocationData
   final bool isMock; // Is the location currently mocked
@@ -211,3 +211,5 @@ helping support this plugin !
 [leancode_lint_link]: https://pub.dev/packages/leancode_lint
 [docs_page_badge]: https://img.shields.io/badge/documentation-docs.page-34C4AC.svg?style
 [docs_page_link]: https://docs.page
+[codecov_badge]: https://codecov.io/gh/Lyokone/flutterlocation/branch/master/graph/badge.svg
+[codecov_link]: https://codecov.io/gh/Lyokone/flutterlocation

@@ -53,10 +53,7 @@ class LocationPlatform extends PlatformInterface {
   }
 
   /// Enables or disables service in the background mode.
-  Future<bool> enableBackgroundMode({
-    bool? enable,
-    bool? banner,
-  }) {
+  Future<bool> enableBackgroundMode({bool? enable}) {
     throw UnimplementedError();
   }
 
