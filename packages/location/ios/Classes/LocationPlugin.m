@@ -100,6 +100,7 @@
     }
   } else if ([call.method isEqualToString:@"enableBackgroundMode"]) {
     BOOL enable = [call.arguments[@"enable"] boolValue];
+    BOOL banner = [call.arguments[@"banner"] boolValue];
     if (self.applicationHasLocationBackgroundMode) {
       if (@available(iOS 9.0, *)) {
         self.clLocationManager.allowsBackgroundLocationUpdates = enable;
