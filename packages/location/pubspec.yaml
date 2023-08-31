@@ -26,9 +26,15 @@ dependencies:
   flutter:
     sdk: flutter
   location_platform_interface:
-    path: ../location_platform_interface
+    git:
+      url: https://github.com/ridewise/flutterlocation
+      path: packages/location_platform_interface
+      ref: feature/significant_motion
   location_web:
-    path: ../location_web
+    git:
+      url: https://github.com/ridewise/flutterlocation
+      path: packages/location_web
+      ref: feature/significant_motion
 dev_dependencies:
   async: ^2.5.0
   build_runner: ^2.3.3

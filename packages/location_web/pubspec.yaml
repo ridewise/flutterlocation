@@ -17,7 +17,10 @@ dependencies:
   http_parser: ^4.0.0
   js: ^0.6.3
   location_platform_interface:
-    path: ../location_platform_interface
+    git:
+      url: https://github.com/ridewise/flutterlocation
+      path: packages/location_platform_interface
+      ref: feature/significant_motion
 
 dev_dependencies:
   flutter_test:
