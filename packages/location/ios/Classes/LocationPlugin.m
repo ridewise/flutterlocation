@@ -60,6 +60,7 @@
     self.clLocationManager = [[CLLocationManager alloc] init];
     self.clLocationManager.delegate = self;
     self.clLocationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    [self monitoringRegion];
   }
 }
 
@@ -215,6 +216,32 @@
   } else {
     result(FlutterMethodNotImplemented);
   }
+}
+
+// geo fencing
+- (void)monitoringRegion {
+    CLLocationCoordinate2D center = CLLocationCoordinate2DMake(
+    self.clLocationManager.location.coordinate.latitude,
+    self.clLocationManager.location.coordinate.longitude);
+    CLRegion *current = [[CLCircularRegion alloc]initWithCenter:center
+                                                          radius:100.0
+                                                      identifier:@"Current"];
+    [self.clLocationManager startMonitoringForRegion:current];
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+         didEnterRegion:(CLRegion *)region {
+}
+
+- (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region {
+    [manager stopMonitoringForRegion:region];
+    [self monitoringRegion];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didStartMonitoringForRegion:(CLRegion *)region {
+}
+
+- (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
 }
 
 - (void)requestPermission {
