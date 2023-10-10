@@ -64,10 +64,16 @@ class MethodChannelLocation extends LocationPlatform {
 
   /// Enables or disables service in the background mode.
   @override
-  Future<bool> enableBackgroundMode({bool? enable}) async {
+  Future<bool> enableBackgroundMode({
+    bool? enable,
+    bool? banner,
+  }) async {
     final result = await _methodChannel!.invokeMethod(
       'enableBackgroundMode',
-      <String, dynamic>{'enable': enable},
+      <String, dynamic>{
+        'enable': enable,
+        'banner': banner,
+      },
     );
 
     return result == 1;
@@ -149,6 +155,20 @@ class MethodChannelLocation extends LocationPlatform {
         Map<String, dynamic>.of(event.cast<String, dynamic>()),
       );
     });
+  }
+
+  @override
+  Future<bool> enableSignificantLocationChange() async {
+    final result =
+        await _methodChannel!.invokeMethod('enableSignificantLocationChange');
+    return result == 1;
+  }
+
+  @override
+  Future<bool> disableSignificantLocationChange() async {
+    final result =
+        await _methodChannel!.invokeMethod('disableSignificantLocationChange');
+    return result == 1;
   }
 
   /// Change options of sticky background notification on Android.

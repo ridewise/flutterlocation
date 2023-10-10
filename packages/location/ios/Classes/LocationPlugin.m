@@ -100,12 +100,13 @@
     }
   } else if ([call.method isEqualToString:@"enableBackgroundMode"]) {
     BOOL enable = [call.arguments[@"enable"] boolValue];
+    BOOL banner = [call.arguments[@"banner"] boolValue];
     if (self.applicationHasLocationBackgroundMode) {
       if (@available(iOS 9.0, *)) {
         self.clLocationManager.allowsBackgroundLocationUpdates = enable;
       }
       if (@available(iOS 11.0, *)) {
-        self.clLocationManager.showsBackgroundLocationIndicator = NO;
+        self.clLocationManager.showsBackgroundLocationIndicator = banner;
         self.clLocationManager.pausesLocationUpdatesAutomatically = NO;
       }
       result(enable ? @1 : @0);
@@ -160,6 +161,17 @@
     } else {
       result(@2);
     }
+  } else if ([call.method isEqualToString:@"enableSignificantLocationChange"]) {
+    if ([self isPermissionGranted]) {
+      [self.clLocationManager startMonitoringSignificantLocationChanges];
+      result(@1);
+    } else {
+      [self requestPermission];
+      result(@0);
+    }
+  } else if ([call.method isEqualToString:@"disableSignificantLocationChange"]) {
+    [self.clLocationManager stopMonitoringSignificantLocationChanges];
+    result(@1);
   } else if ([call.method isEqualToString:@"serviceEnabled"]) {
     if ([CLLocationManager locationServicesEnabled]) {
       result(@1);
