@@ -47,8 +47,14 @@ class Location implements LocationPlatform {
 
   /// Enables or disables service in the background mode.
   @override
-  Future<bool> enableBackgroundMode({bool? enable = true}) {
-    return LocationPlatform.instance.enableBackgroundMode(enable: enable);
+  Future<bool> enableBackgroundMode({
+    bool? enable = true,
+    bool? banner = false,
+  }) {
+    return LocationPlatform.instance.enableBackgroundMode(
+      enable: enable,
+      banner: banner,
+    );
   }
 
   /// Gets the current location of the user.
@@ -97,6 +103,16 @@ class Location implements LocationPlatform {
   @override
   Stream<LocationData> get onLocationChanged {
     return LocationPlatform.instance.onLocationChanged;
+  }
+
+  @override
+  Future<bool> enableSignificantLocationChange() {
+    return LocationPlatform.instance.enableSignificantLocationChange();
+  }
+
+  @override
+  Future<bool> disableSignificantLocationChange() {
+    return LocationPlatform.instance.disableSignificantLocationChange();
   }
 
   /// Change options of sticky background notification on Android.

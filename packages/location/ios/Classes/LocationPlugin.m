@@ -60,6 +60,7 @@
     self.clLocationManager = [[CLLocationManager alloc] init];
     self.clLocationManager.delegate = self;
     self.clLocationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    [self monitoringRegion];
   }
 }
 
@@ -100,12 +101,13 @@
     }
   } else if ([call.method isEqualToString:@"enableBackgroundMode"]) {
     BOOL enable = [call.arguments[@"enable"] boolValue];
+    BOOL banner = [call.arguments[@"banner"] boolValue];
     if (self.applicationHasLocationBackgroundMode) {
       if (@available(iOS 9.0, *)) {
         self.clLocationManager.allowsBackgroundLocationUpdates = enable;
       }
       if (@available(iOS 11.0, *)) {
-        self.clLocationManager.showsBackgroundLocationIndicator = NO;
+        self.clLocationManager.showsBackgroundLocationIndicator = banner;
         self.clLocationManager.pausesLocationUpdatesAutomatically = NO;
       }
       result(enable ? @1 : @0);
@@ -160,6 +162,17 @@
     } else {
       result(@2);
     }
+  } else if ([call.method isEqualToString:@"enableSignificantLocationChange"]) {
+    if ([self isPermissionGranted]) {
+      [self.clLocationManager startMonitoringSignificantLocationChanges];
+      result(@1);
+    } else {
+      [self requestPermission];
+      result(@0);
+    }
+  } else if ([call.method isEqualToString:@"disableSignificantLocationChange"]) {
+    [self.clLocationManager stopMonitoringSignificantLocationChanges];
+    result(@1);
   } else if ([call.method isEqualToString:@"serviceEnabled"]) {
     if ([CLLocationManager locationServicesEnabled]) {
       result(@1);
@@ -203,6 +216,32 @@
   } else {
     result(FlutterMethodNotImplemented);
   }
+}
+
+// geo fencing
+- (void)monitoringRegion {
+    CLLocationCoordinate2D center = CLLocationCoordinate2DMake(
+    self.clLocationManager.location.coordinate.latitude,
+    self.clLocationManager.location.coordinate.longitude);
+    CLRegion *current = [[CLCircularRegion alloc]initWithCenter:center
+                                                          radius:100.0
+                                                      identifier:@"Current"];
+    [self.clLocationManager startMonitoringForRegion:current];
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+         didEnterRegion:(CLRegion *)region {
+}
+
+- (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region {
+    [manager stopMonitoringForRegion:region];
+    [self monitoringRegion];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didStartMonitoringForRegion:(CLRegion *)region {
+}
+
+- (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
 }
 
 - (void)requestPermission {

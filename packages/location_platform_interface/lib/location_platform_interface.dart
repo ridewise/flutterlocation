@@ -53,7 +53,10 @@ class LocationPlatform extends PlatformInterface {
   }
 
   /// Enables or disables service in the background mode.
-  Future<bool> enableBackgroundMode({bool? enable}) {
+  Future<bool> enableBackgroundMode({
+    bool? enable,
+    bool? banner,
+  }) {
     throw UnimplementedError();
   }
 
@@ -99,6 +102,16 @@ class LocationPlatform extends PlatformInterface {
   ///
   /// Throws an error if the app has no permission to access location.
   Stream<LocationData> get onLocationChanged {
+    throw UnimplementedError();
+  }
+
+  /// Start significant location change monitoring
+  Future<bool> enableSignificantLocationChange() {
+    throw UnimplementedError();
+  }
+
+  /// Stop significant location change monitoring
+  Future<bool> disableSignificantLocationChange() {
     throw UnimplementedError();
   }
 
